@@ -1,69 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Lab3WPF
+namespace Lab4
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public static class SDES_Lab4
     {
-        public static int[] P10 = { 3, 5, 2, 7, 4, 10, 1, 9, 8, 6 };
-        public static int[] P8 = { 6, 3, 7, 4, 8, 5, 10, 9 };
-        public static int[] P4 = { 2, 4, 3, 1 };
-        public static int[] IP = { 2, 6, 3, 1, 4, 8, 5, 7 };
-        public static int[] IP2 = { 4, 1, 3, 5, 7, 2, 8, 6 };
-        public static int[] EP = { 4, 1, 2, 3, 2, 3, 4, 1 };
-        public static int[,] SL = {
+        private static int[] P10 = { 3, 5, 2, 7, 4, 10, 1, 9, 8, 6 };
+        private static int[] P8 = { 6, 3, 7, 4, 8, 5, 10, 9 };
+        private static int[] P4 = { 2, 4, 3, 1 };
+        private static int[] IP = { 2, 6, 3, 1, 4, 8, 5, 7 };
+        private static int[] IP2 = { 4, 1, 3, 5, 7, 2, 8, 6 };
+        private static int[] EP = { 4, 1, 2, 3, 2, 3, 4, 1 };
+        private static int[,] SL = {
             {1, 0, 3, 2},
             {3, 2, 1, 0},
             {0, 2, 1, 3},
             {3, 1, 3, 1}
-    };
-        public static int[,] SR = {
+        };
+        private static int[,] SR = {
             {1, 1, 2, 3},
             {2, 0, 1, 3},
             {3, 0, 1, 0},
             {2, 1, 0, 3}
-    };
-        public MainWindow()
-        {
-            InitializeComponent();
-            KeyTextBox.Text = "412";
-            MessageTextBox.Text = "f";
-        }
+        };
 
-        private void Encrypt_Click(object sender, RoutedEventArgs e)
+        public static string Encrypt(string textKey, char message)
         {
-            if (KeyTextBox.Text.Length == 0 | MessageTextBox.Text.Length == 0)
-            {
-                return;
-            }
-
             string result = "";
-            //result += $"{Permutation("1110", P4)}\n";
-            //result += $"LeftCircularShift1: 35274a1986\n";
-            //result += $"LeftCircularShift2: {LeftCircularShift("35274a1986", 3)}\n";
-            //result += $"{XOR("01001101","10000010")}\n";
-            //result += $"{CountSMatrix("11001111")}\n";
-            var key = ToBinaryString(int.Parse(KeyTextBox.Text), 10);
+            var key = ToBinaryString(int.Parse(textKey), 10);
             result += $"Key0: {key}\n";
             var (key1, key2) = GetKeys(key);
             result += $"Key1: {key1}\nKey2: {key2}\n";
 
-            var ip = Permutation(ToBinaryString(MessageTextBox.Text[0], 8), IP);
+            var ip = Permutation(ToBinaryString(message, 8), IP);
             result += $"IP: {ip}\n";
 
             string f1 = Fk(ip, key1);
@@ -80,23 +52,28 @@ namespace Lab3WPF
             result += $"IP^(-1): {ip_2}\n";
 
             result += $"ASCII: {Convert.ToInt32(ip_2, 2)}";
+            result += $"===================================";
 
-            ChiperTextBox.Text = Convert.ToInt32(ip_2, 2).ToString();
+            Debug.WriteLine(result);
 
-            MessageBox.Show(result);
+            return ip_2;
         }
 
-        private void DecryptBox_Click(object sender, RoutedEventArgs e)
+        public static char? Decrypt(string textKey,string chiperText)
         {
-            //MessageBox.Show(int.Parse(ChiperTextBox.Text).ToString());
+            if (chiperText.Length!=8)
+            {
+                return null;
+            }
+
             string result = "";
 
-            var key = ToBinaryString(int.Parse(KeyTextBox.Text), 10);
+            var key = ToBinaryString(int.Parse(textKey), 10);
             result += $"Key0: {key}\n";
             var (key1, key2) = GetKeys(key);
             result += $"Key1: {key1}\nKey2: {key2}\n";
 
-            var ip = Permutation(ToBinaryString(int.Parse(ChiperTextBox.Text), 8), IP);
+            var ip = Permutation(chiperText, IP);
             result += $"IP: {ip}\n";
 
             string f1 = Fk(ip, key2);
@@ -113,14 +90,14 @@ namespace Lab3WPF
             result += $"IP^(-1): {ip_2}\n";
 
             result += $"ASCII: {Convert.ToInt32(ip_2, 2)}";
+            result += $"===================================";
 
-            EncryptedTextBox.Text = Convert.ToInt32(ip_2, 2) + "";
-            EncryptedTextBox.Text += " = " + (char)Convert.ToInt32(ip_2, 2);
+            Debug.WriteLine(result);
 
-            MessageBox.Show(result);
+            return (char)Convert.ToInt32(ip_2, 2);
         }
 
-        public static string Permutation(string value, int[] positions)
+        private static string Permutation(string value, int[] positions)
         {
             var result = "";
             foreach (var position in positions)
@@ -130,7 +107,7 @@ namespace Lab3WPF
             return result;
         }
 
-        public static string LeftCircularShift(string value, int positions)
+        private static string LeftCircularShift(string value, int positions)
         {
             var len = value.Length;
             var partL = value.Substring(0, len / 2);
@@ -145,7 +122,7 @@ namespace Lab3WPF
             return partL + partR;
         }
 
-        public static string XOR(string arg1, string arg2)
+        private static string XOR(string arg1, string arg2)
         {
             var result = "";
             for (int num = 0; num < arg1.Length; num++)
@@ -156,7 +133,7 @@ namespace Lab3WPF
             return result;
         }
 
-        public static string ToBinaryString(int digit, int length)
+        private static string ToBinaryString(int digit, int length)
         {
             string BinaryRes = "";
             int holder;
@@ -177,7 +154,7 @@ namespace Lab3WPF
             return res;
         }
 
-        public static string CountSMatrix(string value)
+        private static string CountSMatrix(string value)
         {
             var result = "";
             var len = value.Length;
@@ -196,13 +173,13 @@ namespace Lab3WPF
             return result;
         }
 
-        public static string SW(string value)
+        private static string SW(string value)
         {
             var len = value.Length;
             return value.Substring(len / 2, len / 2) + value.Substring(0, len / 2);
         }
 
-        public static (string, string) GetKeys(string key)
+        private static (string, string) GetKeys(string key)
         {
             var p10 = Permutation(key, P10);
             var key1 = Permutation(LeftCircularShift(p10, 1), P8);
@@ -210,7 +187,7 @@ namespace Lab3WPF
             return (key1, key2);
         }
 
-        public static string Fk(string ip, string key)
+        private static string Fk(string ip, string key)
         {
             //a
             string ep = Permutation(ip.Substring(4, 4), EP);

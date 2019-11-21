@@ -5,8 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lab3WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="400" Width="800">
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="4*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontWeight="Bold">Lab3</Label>
+        <Label Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14">Key</Label>
+        <Label Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14">Text</Label>
+        <Label Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14">ChiperText</Label>
+        <Label Grid.Column="0" Grid.Row="4" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14">EncryptedText</Label>
+        <TextBox Name="KeyTextBox" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="{DynamicResource TextBoxMargin}"/>
+        <TextBox Name="MessageTextBox" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="{DynamicResource TextBoxMargin}"/>
+        <TextBox Name="ChiperTextBox" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="{DynamicResource TextBoxMargin}"/>
+        <TextBox Name="EncryptedTextBox" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="{DynamicResource TextBoxMargin}"/>
+        <Button Name="EncryptBox" Grid.Column="2" Grid.Row="2 " VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,10,10,10" Click="Encrypt_Click">Encrypt</Button>
+        <Button Name="DecryptBox" Grid.Column="2" Grid.Row="3 " VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,10,10,10" Click="DecryptBox_Click">Decrypt</Button>
     </Grid>
 </Window>
