@@ -6,7 +6,7 @@ namespace Lab5
 {
     public class RC2Implemention
     {
-        private const int SALT_SIZE = 8;
+        private const int SALT_SIZE = 16;
         private const int KEY_SIZE = 16;
 
         private RC2CryptoServiceProvider CryptoServiceProvider { get; set; }
