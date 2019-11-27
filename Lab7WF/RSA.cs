@@ -9,7 +9,7 @@ namespace Lab7
     {
         USER_CONTAINER
     }
-
+    
     enum Info
     {
         P, Q, N, D, EXPONENT
@@ -23,12 +23,12 @@ namespace Lab7
     class RSA
     {
         private RSACryptoServiceProvider rsa;
-        private Int32 keySize;
+        private int keySize;
         private CspParameters cspParameters;
 
         public RSA() { }
 
-        public RSA(Int32 size, Storage typeStorage, String _storageName)
+        public RSA(int size, Storage typeStorage, string _storageName)
         {
             keySize = size;
             switch (typeStorage)
@@ -52,7 +52,7 @@ namespace Lab7
             {
                 rsaParameters = rsa.ExportParameters(true);
             }
-            catch (CryptographicException e)
+            catch (CryptographicException)
             {
                 rsaParameters = rsa.ExportParameters(false);
             }
@@ -98,9 +98,9 @@ namespace Lab7
             return rsa.Decrypt(data, false);
         }
 
-        public Boolean SaveInfo(Storage typeStorage, String storageName)
+        public bool SaveInfo(Storage typeStorage, string storageName)
         {
-            Boolean result = false;
+            bool result = false;
             switch (typeStorage)
             {
                 case Storage.USER_CONTAINER:
@@ -110,10 +110,9 @@ namespace Lab7
             return result;
         }
 
-
-        public Boolean LoadInfo(Storage typeStorage, TypeKey typeKey, String storageName)
+        public bool LoadInfo(Storage typeStorage, TypeKey typeKey, string storageName)
         {
-            Boolean result = false;
+            bool result = false;
             switch (typeStorage)
             {
                 case Storage.USER_CONTAINER:
@@ -123,23 +122,23 @@ namespace Lab7
             return result;
         }
 
-
-        private Boolean LoadFromUserContainer(String containerName)
+        private bool LoadFromUserContainer(string containerName)
         {
-            Boolean result;
+            bool result;
             try
             {
                 cspParameters = new CspParameters
                 {
                     KeyContainerName = containerName,
                     Flags = CspProviderFlags.UseDefaultKeyContainer
+                    
                 };
                 rsa = new RSACryptoServiceProvider(keySize, cspParameters);
                 /* rsa.PersistKeyInCsp = false;
                  rsa.Clear();*/
                 result = true;
             }
-            catch (CryptographicException e)
+            catch (CryptographicException)
             {
                 result = false;
             }
