@@ -1,52 +1,36 @@
 ﻿using System;
-using System.IO;
 using System.Security.Cryptography;
-using System.Windows.Forms;
 
 namespace Lab7
 {
-    enum Storage
-    {
-        USER_CONTAINER
-    }
-    
-    enum Info
+    public enum Info
     {
         P, Q, N, D, EXPONENT
     }
 
-    enum TypeKey
-    {
-        PUBLIC_KEY, PRIVATE_KEY
-    }
-
     class RSA
     {
+
         private RSACryptoServiceProvider rsa;
-        private int keySize;
+        private readonly int keySize;
         private CspParameters cspParameters;
 
         public RSA() { }
 
-        public RSA(int size, Storage typeStorage, string _storageName)
+        public RSA(int keySize, string _storageName)
         {
-            keySize = size;
-            switch (typeStorage)
+            this.keySize = keySize;
+            cspParameters = new CspParameters()
             {
-                case Storage.USER_CONTAINER:
-                    cspParameters = new CspParameters()
-                    {
-                        Flags = CspProviderFlags.UseDefaultKeyContainer,
-                        KeyContainerName = _storageName
-                    };
-                    rsa = new RSACryptoServiceProvider(size, cspParameters);
-                    break;
-            }
+                Flags = CspProviderFlags.UseMachineKeyStore,
+                KeyContainerName = _storageName
+            };
+            rsa = new RSACryptoServiceProvider(keySize, cspParameters);
         }
 
-        public Byte[] GetField(Info param)
+        public byte[] GetField(Info param)
         {
-            Byte[] field = null;
+            byte[] field = null;
             RSAParameters rsaParameters;
             try
             {
@@ -69,16 +53,13 @@ namespace Lab7
                 case Info.Q:
                     field = rsaParameters.Q;
                     break;
-
                 case Info.N:
                     field = rsaParameters.Modulus;
                     break;
 
                 case Info.EXPONENT:
                     field = rsaParameters.Exponent;
-                    Console.WriteLine(rsaParameters.Exponent.Length);
                     break;
-
             }
             return field;
         }
@@ -88,41 +69,17 @@ namespace Lab7
             return rsa.LegalKeySizes;
         }
 
-        public Byte[] Encrypt(Byte[] data)
+        public byte[] Encrypt(byte[] data)
         {
-            return rsa.Encrypt(data, false);
+            return rsa.Encrypt(data, fOAEP: true);
         }
 
-        public Byte[] Decrypt(Byte[] data)
+        public byte[] Decrypt(byte[] data)
         {
-            return rsa.Decrypt(data, false);
+            return rsa.Decrypt(data, fOAEP: true);
         }
 
-        public bool SaveInfo(Storage typeStorage, string storageName)
-        {
-            bool result = false;
-            switch (typeStorage)
-            {
-                case Storage.USER_CONTAINER:
-                    result = true;
-                    break;
-            }
-            return result;
-        }
-
-        public bool LoadInfo(Storage typeStorage, TypeKey typeKey, string storageName)
-        {
-            bool result = false;
-            switch (typeStorage)
-            {
-                case Storage.USER_CONTAINER:
-                    result = LoadFromUserContainer(storageName);
-                    break;
-            }
-            return result;
-        }
-
-        private bool LoadFromUserContainer(string containerName)
+        internal bool LoadFromStorage(string containerName)
         {
             bool result;
             try
@@ -130,12 +87,9 @@ namespace Lab7
                 cspParameters = new CspParameters
                 {
                     KeyContainerName = containerName,
-                    Flags = CspProviderFlags.UseDefaultKeyContainer
-                    
+                    Flags = CspProviderFlags.UseMachineKeyStore
                 };
                 rsa = new RSACryptoServiceProvider(keySize, cspParameters);
-                /* rsa.PersistKeyInCsp = false;
-                 rsa.Clear();*/
                 result = true;
             }
             catch (CryptographicException)

@@ -1,6 +1,6 @@
 ﻿namespace Lab7
 {
-    partial class Form1
+    partial class Main
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.checkBoxForEncryptedTextBox2 = new System.Windows.Forms.CheckBox();
             this.labelCryptedText = new System.Windows.Forms.Label();
             this.encryptedTextBox = new System.Windows.Forms.TextBox();
             this.messageTextBox = new System.Windows.Forms.TextBox();
@@ -47,17 +46,6 @@
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // checkBoxForEncryptedTextBox2
-            // 
-            this.checkBoxForEncryptedTextBox2.AutoSize = true;
-            this.checkBoxForEncryptedTextBox2.Location = new System.Drawing.Point(466, 8);
-            this.checkBoxForEncryptedTextBox2.Name = "checkBoxForEncryptedTextBox2";
-            this.checkBoxForEncryptedTextBox2.Size = new System.Drawing.Size(52, 17);
-            this.checkBoxForEncryptedTextBox2.TabIndex = 18;
-            this.checkBoxForEncryptedTextBox2.Text = "Bytes";
-            this.checkBoxForEncryptedTextBox2.UseVisualStyleBackColor = true;
-            this.checkBoxForEncryptedTextBox2.CheckedChanged += new System.EventHandler(this.checkBoxForEncryptedTextBox2_CheckedChanged);
             // 
             // labelCryptedText
             // 
@@ -85,7 +73,7 @@
             this.messageTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.messageTextBox.Size = new System.Drawing.Size(301, 265);
             this.messageTextBox.TabIndex = 1;
-            this.messageTextBox.Text = "hello";
+            this.messageTextBox.Text = "Hello world";
             // 
             // labelOpenText
             // 
@@ -128,7 +116,7 @@
             this.labelKeySize.Name = "labelKeySize";
             this.labelKeySize.Size = new System.Drawing.Size(31, 13);
             this.labelKeySize.TabIndex = 3;
-            this.labelKeySize.Text = "4096";
+            this.labelKeySize.Text = "2048";
             // 
             // groupBox3
             // 
@@ -146,9 +134,9 @@
             this.labelNameOfContainer.Location = new System.Drawing.Point(5, 23);
             this.labelNameOfContainer.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelNameOfContainer.Name = "labelNameOfContainer";
-            this.labelNameOfContainer.Size = new System.Drawing.Size(76, 13);
+            this.labelNameOfContainer.Size = new System.Drawing.Size(91, 13);
             this.labelNameOfContainer.TabIndex = 2;
-            this.labelNameOfContainer.Text = "User container";
+            this.labelNameOfContainer.Text = "MachineKeyStore";
             // 
             // infoTextBox
             // 
@@ -175,7 +163,7 @@
             this.storageNameTextBox.Name = "storageNameTextBox";
             this.storageNameTextBox.Size = new System.Drawing.Size(141, 20);
             this.storageNameTextBox.TabIndex = 22;
-            this.storageNameTextBox.Text = "MyContainer";
+            this.storageNameTextBox.Text = "Default";
             // 
             // label2
             // 
@@ -209,13 +197,12 @@
             this.encryptButton.UseVisualStyleBackColor = true;
             this.encryptButton.Click += new System.EventHandler(this.encryptButton_Click);
             // 
-            // Form1
+            // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(777, 607);
             this.Controls.Add(this.messageTextBox);
-            this.Controls.Add(this.checkBoxForEncryptedTextBox2);
             this.Controls.Add(this.labelOpenText);
             this.Controls.Add(this.storageNameTextBox);
             this.Controls.Add(this.labelCryptedText);
@@ -229,7 +216,7 @@
             this.Controls.Add(this.encryptButton);
             this.Controls.Add(this.decryptButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "Form1";
+            this.Name = "Main";
             this.Text = "Lab7";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox2.ResumeLayout(false);
@@ -251,7 +238,6 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox infoTextBox;
-        private System.Windows.Forms.CheckBox checkBoxForEncryptedTextBox2;
         private System.Windows.Forms.Button clearButton;
         private System.Windows.Forms.Button createAndSaveButton;
         private System.Windows.Forms.TextBox storageNameTextBox;
