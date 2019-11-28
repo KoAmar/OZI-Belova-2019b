@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
@@ -15,7 +16,6 @@ namespace Lab7
         RSA rsa;
         int keySize;
         string storageName;
-        byte[] originData, encryptedData, decryptedData;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -30,9 +30,9 @@ namespace Lab7
             MessageBox.Show($"Public Key {(result ? "is" : "isn't")} loaded form {storageName}");
             if (result)
             {
-                originData = Encoding.ASCII.GetBytes(messageTextBox.Text);
-                encryptedData = rsa.Encrypt(originData);
-                encryptedTextBox.Text = new string(Encoding.ASCII.GetChars(encryptedData));
+                var originData = Encoding.ASCII.GetBytes(messageTextBox.Text);
+                var encryptedData = rsa.Encrypt(originData);
+                encryptedTextBox.Text = string.Join(":",encryptedData);
 
                 infoTextBox.Text += "Encrypting".PadLeft(65, '=').PadRight(120, '=') + Environment.NewLine;
                 infoTextBox.Text += $"N: {string.Join(":", rsa.GetField(Info.N))}\n\r\n\r";
@@ -56,7 +56,8 @@ namespace Lab7
             MessageBox.Show($"Private Key {(result ? "is" : "isn't")} loaded form {storageName}");
             if (result)
             {
-                decryptedData = rsa.Decrypt(encryptedData);
+                var text = encryptedTextBox.Text.Split(new char[] { ':' });
+                var decryptedData = rsa.Decrypt(text.Select(byte.Parse).ToArray());
                 messageTextBox.Text = new string(Encoding.ASCII.GetChars(decryptedData));
                 infoTextBox.Text += "Decrypting".PadLeft(65, '=').PadRight(120, '=') + Environment.NewLine;
                 infoTextBox.Text += $"P: {string.Join(":", rsa.GetField(Info.P))}\n\r\n\r";

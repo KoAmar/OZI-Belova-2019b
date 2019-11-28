@@ -81,12 +81,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Imges\right-arrow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Imges\left-arrow.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Imges\1486348528-forward-arrows-arrow-front-go_80452.png" />
   </ItemGroup>
   <ItemGroup>

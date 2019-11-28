@@ -10,7 +10,6 @@ namespace Lab7
 
     class RSA
     {
-
         private RSACryptoServiceProvider rsa;
         private readonly int keySize;
         private CspParameters cspParameters;
