@@ -32,11 +32,11 @@ namespace Lab7
             {
                 var originData = Encoding.ASCII.GetBytes(messageTextBox.Text);
                 var encryptedData = rsa.Encrypt(originData);
-                encryptedTextBox.Text = string.Join(":",encryptedData);
+                encryptedTextBox.Text = string.Join(":", encryptedData);
 
                 infoTextBox.Text += "Encrypting".PadLeft(65, '=').PadRight(120, '=') + Environment.NewLine;
                 infoTextBox.Text += $"N: {string.Join(":", rsa.GetField(Info.N))}\n\r\n\r";
-                infoTextBox.Text += $"e: {string.Join(":", rsa.GetField(Info.EXPONENT))}\n\r\n\r";
+                infoTextBox.Text += $"e: {ByteArrToInt(rsa.GetField(Info.EXPONENT))}\n\r\n\r";
                 KeySizes[] legalKeySizes = rsa.GetPossibleKeySizes();
                 if (legalKeySizes.Length > 0)
                 {
@@ -47,6 +47,21 @@ namespace Lab7
                 }
                 infoTextBox.Text += Environment.NewLine;
             }
+        }
+
+        static public int ByteArrToInt(byte[] bytes)
+        {
+            string result = string.Empty;
+
+            foreach (var byt in bytes)
+            {
+                string byteStr = byt.ToString();
+                do { byteStr = '0' + byteStr; }
+                while (byteStr.Length < 8);
+                result += byteStr;
+            }
+
+            return Convert.ToInt32(result, 2);
         }
 
         private void decryptButton_Click(object sender, EventArgs e)
@@ -63,7 +78,7 @@ namespace Lab7
                 infoTextBox.Text += $"P: {string.Join(":", rsa.GetField(Info.P))}\n\r\n\r";
                 infoTextBox.Text += $"Q: {string.Join(":", rsa.GetField(Info.Q))}\n\r\n\r";
                 infoTextBox.Text += $"N: {string.Join(":", rsa.GetField(Info.N))}\n\r\n\r";
-                infoTextBox.Text += $"e: {string.Join(":", rsa.GetField(Info.EXPONENT))}\n\r\n\r";
+                infoTextBox.Text += $"e: {ByteArrToInt(rsa.GetField(Info.EXPONENT))}\n\r\n\r";
                 infoTextBox.Text += $"d: {string.Join(":", rsa.GetField(Info.D))}\n\r";
             }
         }
