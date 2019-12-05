@@ -8,79 +8,90 @@ namespace lab8_bel
 {
     public partial class Form1 : Form
     {
-        private const string SHA1_OID = "1.3.14.3.2.26";
-        private const string MD5_OID = "1.2.840.113549.2.5";
-        private byte[] hash = null;
-        private RSAParameters param = new RSAParameters();
-        private byte[] signature = null;
+        private const string SHA512_OID = "2.16.840.1.101.3.4.2.3";
+
+        private RSAParameters _rsaparams = new RSAParameters();
+
+        private byte[] _signaturebytes = null;
 
         public Form1()
         {
             InitializeComponent();
         }
 
-        private void changeButton_Click(object sender, EventArgs e)
+        private void SignButton_Click(object sender, EventArgs e)
         {
-            signature = fromHex(signatureBox.Text);
+            var text = messageBox.Text;
+            var hash = CalculateHash(text);
+
+            infoBox.Text += "\r\n\r\n";
+            var rsa = new RSACryptoServiceProvider();
+            _rsaparams = rsa.ExportParameters(includePrivateParameters: true);
+
+            byte[] signature = rsa.SignHash(hash, SHA512_OID);
+            _signaturebytes = signature;
+
+            PrintInfo(rsa);
         }
 
-        private byte[] ComputeHash(string text)
+        private void VerifySignatureButton_Click(object sender, EventArgs e)
         {
-            hashBox.Text = "";
-            infoBox.Text = "";
+            var text = messageBox.Text;
+            var secondHash = CalculateHash(text);
+            var rsa = new RSACryptoServiceProvider();
+            rsa.ImportParameters(_rsaparams);
+
+            var result = rsa.VerifyHash(secondHash, SHA512_OID, _signaturebytes);
+
+            PrintInfo(rsa);
+            MessageBox.Show("Is the same hash: " + result);
+        }
+
+        private void PrintInfo(RSACryptoServiceProvider rsa)
+        {
+            infoBox.Text +=
+                  $"Keys size: {rsa.KeySize}\r\n\r\n"
+                + $"Open key(e): {ByteArrToInt(_rsaparams.Exponent)}\r\n\r\n"
+                + $"Private key(d): {ByteArrToStr(_rsaparams.D)}\r\n\r\n"
+                + $"N: {ByteArrToStr(_rsaparams.Modulus) }\r\n\r\n"
+                + $"P: {ByteArrToStr(_rsaparams.P)}\r\n\r\n"
+                + $"Q: {ByteArrToStr(_rsaparams.Q)}\r\n\r\n";
+
+            if (_signaturebytes != null)
+            {
+                infoBox.Text += $"Signature: {ByteArrToStr(_signaturebytes)}";
+            }
+        }
+
+        private byte[] CalculateHash(string text)
+        {
+            hashBox.Text = string.Empty;
+            infoBox.Text = string.Empty;
             var bytes = Encoding.UTF8.GetBytes(text);
-            SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider();
-            var hash = sha.ComputeHash(bytes);
-            infoBox.Text += "Hash size: " + sha.HashSize + "\r\n";
-            hashBox.Text += toHex(hash) + "\r\n";
+            var sha512 = new SHA512CryptoServiceProvider();
+            var hash = sha512.ComputeHash(bytes);
+            hashBox.Text += ToHex(hash) + Environment.NewLine;
+            infoBox.Text += $"Hash size: {sha512.HashSize}\r\n";
             return hash;
         }
 
-        private byte[] fromHex(string text)
-        {
-            return SoapHexBinary.Parse(text).Value;
-        }
+        private string ToHex(byte[] bytes) => new SoapHexBinary(bytes).ToString();
 
-        private void signButton_Click(object sender, EventArgs e)
-        {
-            var text = plainBox.Text;
-            hash = ComputeHash(text);
-            signature = SignHash(hash);
-            signatureBox.Text = toHex(signature);
-        }
+        private static string ByteArrToStr(byte[] bytes) => string.Join(":", bytes);
 
-        private byte[] SignHash(byte[] hash)
+        static public int ByteArrToInt(byte[] bytes)
         {
-            infoBox.Text += "\r\n\r\n";
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-            param = rsa.ExportParameters(true);
-            var signature = rsa.SignHash(hash, SHA1_OID);
-            infoBox.Text += "Keys size: " + rsa.KeySize + "\r\n" + "\r\n"
-                + "Open key(e): " + toHex(param.Exponent) + "\r\n" + "\r\n"
-                + "Private key(d): " + toHex(param.D) + "\r\n" + "\r\n"
-                + "N: " + toHex(param.Modulus) + "\r\n" + "\r\n"
-                + "P: " + toHex(param.P) + "\r\n" + "\r\n"
-                + "Q: " + toHex(param.Q) + "\r\n";
-            return signature;
-        }
+            string result = string.Empty;
 
-        private string toHex(byte[] bytes)
-        {
-            return new SoapHexBinary(bytes).ToString();
-        }
+            foreach (var byt in bytes)
+            {
+                string byteStr = byt.ToString();
+                do { byteStr = '0' + byteStr; }
+                while (byteStr.Length < 8);
+                result += byteStr;
+            }
 
-        private void unsignButton_Click(object sender, EventArgs e)
-        {
-            var text = plainBox.Text;
-            var secondHash = ComputeHash(text);
-            infoBox.Text = "Is the same hash: " + verifySign(secondHash, signature);
-        }
-
-        private bool verifySign(byte[] hash, byte[] signature)
-        {
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-            rsa.ImportParameters(param);
-            return rsa.VerifyHash(hash, SHA1_OID, signature);
+            return Convert.ToInt32(result, 2);
         }
     }
 }
